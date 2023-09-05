@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import html2canvas from "html2canvas";
+import * as htmlToImage from "html-to-image";
+import { saveAs } from "file-saver";
 import bannerpic from "../../../public/2.png";
 import { useEffect, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
@@ -10,20 +11,22 @@ export default function Banner() {
   const [name, setName] = useState<any>();
   const [image, setImage] = useState<any>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const handleDownload = () => {
-    const divToCapture = document.getElementById("content");
-    if (!divToCapture) return;
-
-    html2canvas(divToCapture).then((canvas) => {
-      const imageDataURL = canvas.toDataURL("image/png");
-
-      const a = document.createElement("a");
-      a.href = imageDataURL;
-      a.download = `${name}-fastfood.png`;
-      a.click();
+    htmlToImage
+    .toBlob(document.getElementById("content") as HTMLElement)
+    .then((blob) => {
+      if (blob) {
+        const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
+        saveAs(blob, `${name}-fastfood-banner.png`);
+      } else {
+        // Handle the case when blob is null
+        console.error("Blob is null.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
     });
-  };
+};
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -36,11 +39,11 @@ export default function Banner() {
 
   return (
     <>{isVisible && (
-      <div className="fixed w-screen h-screen top-0 left-0 z-50 flex items-center justify-center bg-slate-400">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-400">
         <div className="w-80 rounded bg-black py-8 text-center shadow-md">
           <p className="mb-4 text-xs">
             Does {name} Need a Professional Website?
-            <br /> Contact <span className="text-sm font-semibold text-[#AB2B2B]"> Priest 09067789223</span>
+            <br /> Contact <span className="text-sm font-semibold text-red-500"> Priest 09067789223</span>
             .
           </p>
           <Link href="/">

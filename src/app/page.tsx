@@ -3,8 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import logo from "../../public/covenantLogo.png";
+
 export default function Home() {
-const [imagePreview, setImagePreview] = useState<string | undefined>();
+const [imagePreview, setImagePreview] = useState<any>();
 const fileInputRef = useRef<HTMLInputElement | null>(null);
 const [name, setName] = useState<string>("");
 
@@ -14,16 +15,18 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   if (file) {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result as string);
+      const imagePreviewDataUrl = reader.result as string;
+      setImagePreview(imagePreviewDataUrl);
+      saveToLocalStorage(imagePreviewDataUrl, name);
     };
     reader.readAsDataURL(file);
   } else {
-    setImagePreview("");
+    setImagePreview(null);
   }
-};
+}
 
-const saveToLocalStorage = (imageData: string, name:string) => {
-  localStorage.setItem("image", imageData);
+const saveToLocalStorage = (imagePreview: any, name:any) => {
+  localStorage.setItem("image", imagePreview);
   console.log("Image saved to local storage!");
 
   localStorage.setItem("name", name);
@@ -99,7 +102,6 @@ const handleButtonClick = () => {
             <div className="my-5 flex justify-center">
               <Link
                 href="banner"
-                onClick={() => saveToLocalStorage}
                 className="rounded-lg border-2 border-purple-700 bg-purple-700 px-3 py-2 font-semibold text-white duration-500 hover:bg-white hover:text-purple-700"
               >
                 Generate Banner

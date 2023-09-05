@@ -47,7 +47,7 @@ const handleButtonClick = () => {
              <span className="font-bold text-red-500"> September Youth Summit </span> with your personalized DP!!!
           </p>
           <p className="mt-4 lg:mt-10">
-            It is super easy, and can be completed in under two minutes.
+            It is super easy, and can be completed under two minutes.
           </p>
           <p className="mt-4 lg:mt-10">
             <span className="font-bold text-red-500">

@@ -35,26 +35,26 @@ export default function Banner() {
   }, []);
 
   return (
-    <main className="mx-auto pt-10 lg:w-5/6 lg:pt-16">
-      {isVisible && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-400">
-          <div className="w-80 rounded bg-black py-8 text-center shadow-md">
-            <p className="mb-4 text-xs">
-              Want a Professional Website?
-              <br /> Contact <span className="text-sm font-semibold text-[#AB2B2B]"> Priest 09067789223</span>
-              .
-            </p>
-            <Link href="/">
-              <button
-                onClick={handleDownload}
-                className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-              >
-                Download Image
-              </button>
-            </Link>
-          </div>
+    <>{isVisible && (
+      <div className="fixed w-screen h-screen top-0 left-0 z-50 flex items-center justify-center bg-slate-400">
+        <div className="w-80 rounded bg-black py-8 text-center shadow-md">
+          <p className="mb-4 text-xs">
+            Does {name} Need a Professional Website?
+            <br /> Contact <span className="text-sm font-semibold text-[#AB2B2B]"> Priest 09067789223</span>
+            .
+          </p>
+          <Link href="/">
+            <button
+              onClick={handleDownload}
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            >
+              Download Image
+            </button>
+          </Link>
         </div>
-      )}
+      </div>
+    )}
+    <main className="mx-auto pt-10 lg:w-5/6 lg:pt-16">
       <Link
         href="/"
         className="mb-5 ml-5 flex w-fit items-center gap-2 rounded-md border border-purple-700 px-4 py-2 duration-500 hover:bg-purple-700"
@@ -85,7 +85,7 @@ export default function Banner() {
       <div className={`${isVisible ? "flex" : "hidden"} justify-center`}>
         <div
           id="content"
-          className="relative h-[1080px] min-w-[1080px] overflow-x-auto"
+          className="relative h-[1080px] min-w-[1080px]"
         >
           <Image src={bannerpic} alt="Picture of Church Dp banner" priority />
 
@@ -110,5 +110,6 @@ export default function Banner() {
         </button>
       </div>
     </main>
+    </>
   );
 }

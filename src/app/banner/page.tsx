@@ -1,8 +1,6 @@
 "use client";
 import Image from "next/image";
-// import * as htmlToImage from "html-to-image";
-// import { saveAs } from "file-saver";
-import { toPng } from 'html-to-image';
+import { domToPng } from 'modern-screenshot'
 import bannerpic from "../../../public/copy.png";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { BiArrowBack } from "react-icons/bi";
@@ -33,52 +31,21 @@ export default function Banner() {
 
     return () => clearInterval(timer);
   }, [isVisible, countdown]);
-
-  // const handleDownload = () => {
-  //   htmlToImage
-  //     .toPng(document.getElementById("content") as HTMLElement)
-  //     .then((blob) => {
-  //       if (blob) {
-  //         const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
-  //         saveAs(blob, `${name}-fastfood-banner.png`);
-          
-  //         // Remove name and image from local storage
-  //         localStorage.removeItem("name");
-  //         localStorage.removeItem("image");
-  //       } else {
-  //         // Handle the case when blob is null
-  //         console.error("Blob is null.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // };
-
-  const ref = useRef<HTMLDivElement>(null)
-
-  const handleDownload = useCallback(() => {
-    if (ref.current === null) {
-      return
-    }
-
-    toPng(ref.current, { cacheBust: true, })
-      .then((dataUrl) => {
-        const link = document.createElement('a')
-        const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
-        link.download = `${name}-fastfood-banner.png`
-        link.href = dataUrl
-        link.click()
-        
+ 
+  const handleDownload = () => {
+    domToPng(document.querySelector('#content') as HTMLElement).then(dataUrl => {
+      const link = document.createElement('a')
+      const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
+      link.download = `${name}-fastfood-banner.png`
+      link.href = dataUrl
+      link.click()
       // Remove name and image from local storage
           localStorage.removeItem("name");
-           localStorage.removeItem("image");
-      })
-      .catch((err) => {
+          localStorage.removeItem("image");
+    }).catch((err) => {
         console.log(err)
-      })
-  }, [ref] )
-  
+          })
+  }
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -129,13 +96,13 @@ export default function Banner() {
         <div className="relative">
           <Image src={bannerpic} alt="Picture of Church Dp banner" priority />
 
-          <div className="absolute right-[110px] top-[180px] bg-white p-1">
+          <div className="absolute right-[110px] top-[160px] bg-white p-1">
             <Image
               src={image}
               alt="User's Photo"
               width="185"
               height="50"
-              className="h-[120px] w-[120px]"
+              className="h-[140px] w-[120px]"
               priority
             />
           </div>
@@ -144,8 +111,7 @@ export default function Banner() {
       <p className="text-xs lg:text-sm mx-auto w-64 lg:w-96 my-2 text-center">This is just a Preview, the downloadable version looks <span className="font-semibold text-red-600">BETTER.</span> </p>
       <div className={`${isVisible ? "flex" : "hidden"} justify-center`}>
         <div
-          // id="content"
-          ref={ref}
+          id="content"
           className="relative h-[1080px] min-w-[1080px]"
         >
           <Image src={bannerpic} alt="Picture of Church Dp banner" priority />

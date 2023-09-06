@@ -11,6 +11,23 @@ export default function Banner() {
   const [name, setName] = useState<any>();
   const [image, setImage] = useState<any>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(15);
+  const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    let timer:NodeJS.Timeout | undefined;
+
+    if (isVisible && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    } else {
+      setIsButtonEnabled(true); // Enable the button when the countdown completes
+    }
+
+    return () => clearInterval(timer);
+  }, [isVisible, countdown]);
+
   const handleDownload = () => {
     htmlToImage
     .toBlob(document.getElementById("content") as HTMLElement)
@@ -39,21 +56,30 @@ export default function Banner() {
 
   return (
     <>{isVisible && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-400">
-        <div className="w-80 rounded bg-black py-8 text-center shadow-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 text-black font-semibold">
+        <div className="w-80 rounded bg-slate-200 py-8 text-center shadow-md">
           <p className="mb-4 text-xs">
             Does {name} Need a Professional Website?
-            <br /> Contact <span className="text-sm font-semibold text-red-500"> Priest on 09067789223</span>
+            <br /> Contact <span className="text-sm font-bold text-green-600"> Priest on 09067789223</span>
             .
           </p>
-          <Link href="/">
-            <button
-              onClick={handleDownload}
-              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-            >
-              Download Image
-            </button>
-          </Link>
+          {countdown > 0 ? (
+            <p>Time remaining: {countdown} seconds</p>
+          ) : (
+            <Link href="/">
+              <button
+                onClick={handleDownload}
+                className={`rounded ${
+                  isButtonEnabled ? "bg-blue-500" : "bg-gray-400"
+                } px-4 py-2 text-white ${
+                  isButtonEnabled ? "hover:bg-blue-600" : ""
+                }`}
+                disabled={!isButtonEnabled}
+              >
+                Download Image
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     )}
@@ -85,6 +111,7 @@ export default function Banner() {
           </div>
         </div>
       </div>
+      <p className="text-xs lg:text-sm mx-auto w-64 lg:w-96 my-2 text-center">This is just a Preview, the downloadable version looks <span className="font-semibold text-red-600">BETTER.</span> </p>
       <div className={`${isVisible ? "flex" : "hidden"} justify-center`}>
         <div
           id="content"
@@ -92,13 +119,13 @@ export default function Banner() {
         >
           <Image src={bannerpic} alt="Picture of Church Dp banner" priority />
 
-      <div className="absolute right-[260px] top-[410px] bg-white p-1">
+      <div className="absolute right-[225px] top-[360px] bg-white p-1">
             <Image
               src={image}
               alt="User's Photo"
               width="185"
               height="50"
-              className="h-[240px] w-[240px]"
+              className="h-[300px] w-[300px]"
               priority
             />
           </div>

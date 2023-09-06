@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRef, useState } from "react";
+import {HiInformationCircle} from "react-icons/hi"
 import logo from "../../public/covenantLogo.png";
 
 export default function Home() {
@@ -44,16 +45,15 @@ const handleButtonClick = () => {
         <div className="w-full text-sm sm:text-base lg:w-1/2 lg:text-lg">
           <p>
             Invite your friends for the
-             <span className="font-bold text-red-500"> September Youth Summit </span> with your personalized DP!!!
+             <span className="font-bold text-red-600"> September Youth Summit </span> with your personalized DP!!!
           </p>
           <p className="mt-4 lg:mt-10">
             It is super easy, and can be completed under two minutes.
           </p>
           <p className="mt-4 lg:mt-10">
-            <span className="font-bold text-red-500">
+            <span className="font-bold text-red-600">
               1<sup>st</sup> Corinthians 15:58:
-            </span>
-            Therefore, my dear brothers and sisters, stand firm. Let nothing
+            </span> Therefore, my dear brothers and sisters, stand firm. Let nothing
             move you. Always give yourselves fully to the work of the Lord,
             because you know that your labor in the Lord is not in vain.
           </p>
@@ -70,7 +70,7 @@ const handleButtonClick = () => {
             <div className="my-5 flex justify-center">
               <button
                 onClick={handleButtonClick}
-                className="text-semibold rounded-lg border-2 border-red-500 bg-red-500 px-3 py-2 text-white duration-500 hover:bg-white hover:text-red-500"
+                className="text-semibold rounded-lg border-2 border-red-500 bg-red-500 px-3 py-2 text-white duration-500 hover:bg-white hover:text-red-600"
               >
                 Select Image
               </button>
@@ -98,7 +98,7 @@ const handleButtonClick = () => {
               <div className="py-20 px-24">Image</div>
             )}
           </div>
-
+            <p className="text-[0.69rem] text-black flex items-center text-center my-2 font-semibold"><HiInformationCircle className="text-red-600" size={20}/>Choose portrait photos for a better look</p>
             <div className="my-5 flex justify-center">
               <Link
                 href="banner"

@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import { domToPng } from 'modern-screenshot'
+import * as htmlToImage from "html-to-image";
+import { saveAs } from "file-saver";
 import bannerpic from "../../../public/copy.png";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { BiArrowBack } from "react-icons/bi";
@@ -31,22 +32,28 @@ export default function Banner() {
 
     return () => clearInterval(timer);
   }, [isVisible, countdown]);
- 
+
   const handleDownload = () => {
-    domToPng(document.querySelector('#content') as HTMLElement).then(dataUrl => {
-      const link = document.createElement('a')
-      const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
-      link.download = `${name}-fastfood-banner.png`
-      link.href = dataUrl
-      link.click()
-      // Remove name and image from local storage
+    htmlToImage
+      .toPng(document.getElementById("content") as HTMLElement)
+      .then((blob) => {
+        if (blob) {
+          const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
+          saveAs(blob, `${name}-fastfood-banner.png`);
+          
+          // Remove name and image from local storage
           localStorage.removeItem("name");
           localStorage.removeItem("image");
-    }).catch((err) => {
-        console.log(err)
-          })
-  }
-
+        } else {
+          // Handle the case when blob is null
+          console.error("Blob is null.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };

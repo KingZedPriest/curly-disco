@@ -30,20 +30,25 @@ export default function Banner() {
 
   const handleDownload = () => {
     htmlToImage
-    .toBlob(document.getElementById("content") as HTMLElement)
-    .then((blob) => {
-      if (blob) {
-        const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
-        saveAs(blob, `${name}-fastfood-banner.png`);
-      } else {
-        // Handle the case when blob is null
-        console.error("Blob is null.");
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-};
+      .toBlob(document.getElementById("content") as HTMLElement)
+      .then((blob) => {
+        if (blob) {
+          const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
+          saveAs(blob, `${name}-fastfood-banner.png`);
+          
+          // Remove name and image from local storage
+          localStorage.removeItem("name");
+          localStorage.removeItem("image");
+        } else {
+          // Handle the case when blob is null
+          console.error("Blob is null.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);

@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
-import * as htmlToImage from "html-to-image";
-import { saveAs } from "file-saver";
+// import * as htmlToImage from "html-to-image";
+// import { saveAs } from "file-saver";
+import { toPng } from 'html-to-image';
 import bannerpic from "../../../public/copy.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import Link from "next/link";
 
@@ -13,6 +14,11 @@ export default function Banner() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(15);
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    setName(localStorage.getItem("name"));
+    setImage(localStorage.getItem("image"));
+  }, []);
 
   useEffect(() => {
     let timer:NodeJS.Timeout | undefined;
@@ -28,36 +34,55 @@ export default function Banner() {
     return () => clearInterval(timer);
   }, [isVisible, countdown]);
 
-  const handleDownload = () => {
-    htmlToImage
-      .toBlob(document.getElementById("content") as HTMLElement)
-      .then((blob) => {
-        if (blob) {
-          const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
-          saveAs(blob, `${name}-fastfood-banner.png`);
+  // const handleDownload = () => {
+  //   htmlToImage
+  //     .toPng(document.getElementById("content") as HTMLElement)
+  //     .then((blob) => {
+  //       if (blob) {
+  //         const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
+  //         saveAs(blob, `${name}-fastfood-banner.png`);
           
-          // Remove name and image from local storage
+  //         // Remove name and image from local storage
+  //         localStorage.removeItem("name");
+  //         localStorage.removeItem("image");
+  //       } else {
+  //         // Handle the case when blob is null
+  //         console.error("Blob is null.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
+
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleDownload = useCallback(() => {
+    if (ref.current === null) {
+      return
+    }
+
+    toPng(ref.current, { cacheBust: true, })
+      .then((dataUrl) => {
+        const link = document.createElement('a')
+        const name = (localStorage.getItem("name") || "").replace(/\s+/g, "_");
+        link.download = `${name}-fastfood-banner.png`
+        link.href = dataUrl
+        link.click()
+        
+      // Remove name and image from local storage
           localStorage.removeItem("name");
-          localStorage.removeItem("image");
-        } else {
-          // Handle the case when blob is null
-          console.error("Blob is null.");
-        }
+           localStorage.removeItem("image");
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [ref] )
   
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
-
-  useEffect(() => {
-    setName(localStorage.getItem("name"));
-    setImage(localStorage.getItem("image"));
-  }, []);
 
   return (
     <>{isVisible && (
@@ -119,7 +144,8 @@ export default function Banner() {
       <p className="text-xs lg:text-sm mx-auto w-64 lg:w-96 my-2 text-center">This is just a Preview, the downloadable version looks <span className="font-semibold text-red-600">BETTER.</span> </p>
       <div className={`${isVisible ? "flex" : "hidden"} justify-center`}>
         <div
-          id="content"
+          // id="content"
+          ref={ref}
           className="relative h-[1080px] min-w-[1080px]"
         >
           <Image src={bannerpic} alt="Picture of Church Dp banner" priority />
